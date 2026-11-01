@@ -8,9 +8,12 @@ import '../nucleo/errores.dart';
 /// Después de cada cambio vuelve a pedir los datos al servidor, de modo que la
 /// pantalla siempre muestra lo que realmente quedó guardado.
 class FinanzasControlador extends ChangeNotifier {
-  FinanzasControlador(this._repo);
+  FinanzasControlador(this._repo, {this.alActualizar});
 
   final RepositorioFinanzas _repo;
+
+  /// Se llama cuando los datos se recargaron (por ejemplo, para refrescar los gráficos).
+  final Future<void> Function()? alActualizar;
 
   Resumen? resumen;
   List<Movimiento> movimientos = const [];
@@ -26,6 +29,7 @@ class FinanzasControlador extends ChangeNotifier {
     await _recargar();
     cargando = false;
     notifyListeners();
+    await alActualizar?.call();
   }
 
   Future<void> _recargar() async {
@@ -58,6 +62,7 @@ class FinanzasControlador extends ChangeNotifier {
     await _recargar();
     ocupado = false;
     notifyListeners();
+    await alActualizar?.call();
     return true;
   }
 

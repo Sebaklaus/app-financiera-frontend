@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 
 import '../estado/banco_controlador.dart';
 import '../estado/finanzas_controlador.dart';
+import '../estado/metas_controlador.dart';
 import '../estado/sesion_controlador.dart';
-import 'pagina_aprender.dart';
-import 'pagina_banco.dart';
 import 'pagina_confirmaciones.dart';
 import 'pagina_inicio.dart';
+import 'pagina_mas.dart';
+import 'pagina_metas.dart';
 import 'pagina_movimientos.dart';
 
-/// Contenedor con la barra inferior: Resumen, Confirmar y Movimientos.
+/// Contenedor con la barra inferior: Resumen, Confirmar, Movimientos, Metas y Más (Banco y Aprender).
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});
 
@@ -28,6 +29,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
       if (!mounted) return;
       context.read<FinanzasControlador>().cargar();
       context.read<BancoControlador>().cargar();
+      context.read<MetasControlador>().cargar();
     });
   }
 
@@ -81,8 +83,8 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
           PaginaInicio(irAConfirmaciones: () => setState(() => _pestana = 1)),
           const PaginaConfirmaciones(),
           const PaginaMovimientos(),
-          const PaginaBanco(),
-          const PaginaAprender(),
+          const PaginaMetas(),
+          const PaginaMas(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -113,14 +115,14 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
             label: 'Movimientos',
           ),
           const NavigationDestination(
-            icon: Icon(Icons.account_balance_outlined),
-            selectedIcon: Icon(Icons.account_balance),
-            label: 'Banco',
+            icon: Icon(Icons.flag_outlined),
+            selectedIcon: Icon(Icons.flag),
+            label: 'Metas',
           ),
           const NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book),
-            label: 'Aprender',
+            icon: Icon(Icons.more_horiz),
+            selectedIcon: Icon(Icons.more_horiz),
+            label: 'Más',
           ),
         ],
       ),

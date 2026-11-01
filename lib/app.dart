@@ -4,10 +4,18 @@ import 'package:provider/provider.dart';
 import 'datos/cliente_api.dart';
 import 'datos/repositorio_banco.dart';
 import 'datos/repositorio_consentimientos.dart';
+import 'datos/repositorio_cuenta.dart';
+import 'datos/repositorio_dashboard.dart';
+import 'datos/repositorio_inversion.dart';
 import 'datos/repositorio_finanzas.dart';
+import 'datos/repositorio_metas.dart';
 import 'estado/banco_controlador.dart';
 import 'estado/consentimientos_controlador.dart';
+import 'estado/cuenta_controlador.dart';
+import 'estado/dashboard_controlador.dart';
 import 'estado/finanzas_controlador.dart';
+import 'estado/inversion_controlador.dart';
+import 'estado/metas_controlador.dart';
 import 'estado/sesion_controlador.dart';
 import 'nucleo/tema.dart';
 import 'presentacion/pantalla_login.dart';
@@ -70,14 +78,29 @@ class _ZonaAutenticada extends StatelessWidget {
               ConsentimientosControlador(RepositorioConsentimientosApi(api))
                 ..cargar(),
         ),
+        ChangeNotifierProvider<DashboardControlador>(
+          create: (_) => DashboardControlador(RepositorioDashboardApi(api)),
+        ),
         ChangeNotifierProvider<FinanzasControlador>(
-          create: (_) => FinanzasControlador(RepositorioFinanzasApi(api)),
+          create: (ctx) => FinanzasControlador(
+            RepositorioFinanzasApi(api),
+            alActualizar: ctx.read<DashboardControlador>().cargar,
+          ),
         ),
         ChangeNotifierProvider<BancoControlador>(
           create: (ctx) => BancoControlador(
             RepositorioBancoApi(api),
             alImportar: ctx.read<FinanzasControlador>().cargar,
           ),
+        ),
+        ChangeNotifierProvider<InversionControlador>(
+          create: (_) => InversionControlador(RepositorioInversionApi(api)),
+        ),
+        ChangeNotifierProvider<CuentaControlador>(
+          create: (_) => CuentaControlador(RepositorioCuentaApi(api)),
+        ),
+        ChangeNotifierProvider<MetasControlador>(
+          create: (_) => MetasControlador(RepositorioMetasApi(api)),
         ),
       ],
       child: const PuertaConsentimientos(),

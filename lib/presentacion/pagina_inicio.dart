@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../dominio/modelos.dart';
+import '../estado/dashboard_controlador.dart';
 import '../estado/finanzas_controlador.dart';
 import '../nucleo/formato.dart';
 import '../nucleo/tema.dart';
@@ -9,6 +10,7 @@ import 'hoja_gasto.dart';
 import 'hoja_ingreso.dart';
 import 'widgets/aviso_error.dart';
 import 'widgets/contenido_centrado.dart';
+import 'widgets/graficos.dart';
 
 /// Resumen por categoría y accesos para registrar ingresos y gastos.
 class PaginaInicio extends StatelessWidget {
@@ -123,6 +125,8 @@ class PaginaInicio extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               for (final c in r.categorias) _TarjetaCategoria(c),
+              const SizedBox(height: 8),
+              const _PanelGraficos(),
             ],
           ],
         ),
@@ -196,6 +200,49 @@ class _TarjetaCategoria extends StatelessWidget {
             if (c.rechazado > 0)
               Text('Sin apartar (rechazado) ${clp(c.rechazado)}',
                   style: tema.bodySmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Gráficos: ingresos y gastos de los últimos meses y en qué se fue el gasto de este mes.
+class _PanelGraficos extends StatelessWidget {
+  const _PanelGraficos();
+
+  @override
+  Widget build(BuildContext context) {
+    final d = context.watch<DashboardControlador>();
+    final tema = Theme.of(context);
+    final titulo = tema.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Últimos 6 meses', style: titulo),
+            const SizedBox(height: 12),
+            if (d.error != null)
+              AvisoError(d.error!)
+            else if (d.cargando && d.meses.isEmpty)
+              const Center(child: CircularProgressIndicator())
+            else if (!d.hayDatos)
+              const Text('Cuando registres ingresos y gastos, aquí verás cómo van mes a mes.')
+            else ...[
+              GraficoTendencia(meses: d.meses, maximo: d.maximo),
+              const SizedBox(height: 4),
+              Text(
+                d.actual!.balance >= 0
+                    ? 'Este mes te quedan ${clp(d.actual!.balance)} (ingresos menos gastos).'
+                    : 'Este mes gastaste ${clp(-d.actual!.balance)} más de lo que ingresó.',
+              ),
+              const SizedBox(height: 16),
+              Text('En qué se fue tu gasto este mes', style: titulo),
+              const SizedBox(height: 6),
+              GraficoCategorias(gastos: d.gastosDelMes),
+            ],
           ],
         ),
       ),
