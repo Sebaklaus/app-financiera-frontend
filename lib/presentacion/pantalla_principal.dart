@@ -40,7 +40,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
     final pendientes = f.pendientes.length;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App Financiera'),
+        title: const Text('HelpFinance'),
         actions: [
           if (f.cargando || f.ocupado)
             const Padding(

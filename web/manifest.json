@@ -1,6 +1,6 @@
 {
-    "name": "app_financiera",
-    "short_name": "app_financiera",
+    "name": "HelpFinance",
+    "short_name": "HelpFinance",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

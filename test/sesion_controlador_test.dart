@@ -26,6 +26,16 @@ class _RepoFalso implements RepositorioAuth {
 
   @override
   Future<void> cerrarSesion() async => cerro = true;
+
+  @override
+  Future<void> solicitarRecuperacion(String email) async {
+    if (fallo != null) throw fallo!;
+  }
+
+  @override
+  Future<void> restablecerContrasena(String token, String contrasenaNueva) async {
+    if (fallo != null) throw fallo!;
+  }
 }
 
 void main() {
@@ -76,5 +86,21 @@ void main() {
     expect(repo.cerro, isTrue);
     expect(c.estado, EstadoSesion.sinSesion);
     expect(c.email, isNull);
+  });
+
+  test('pedir recuperación con correo inválido devuelve mensaje', () async {
+    final c = SesionControlador(_RepoFalso());
+    expect(await c.solicitarRecuperacion('no-es-correo'), isNotNull);
+  });
+
+  test('pedir recuperación con correo válido no devuelve error', () async {
+    final c = SesionControlador(_RepoFalso());
+    expect(await c.solicitarRecuperacion('a@b.cl'), isNull);
+  });
+
+  test('restablecer muestra el mensaje del servidor si falla', () async {
+    final c = SesionControlador(
+        _RepoFalso(fallo: const ErrorApi(400, 'El enlace no sirve')));
+    expect(await c.restablecerContrasena('x', 'abcd1234'), 'El enlace no sirve');
   });
 }

@@ -57,6 +57,28 @@ class SesionControlador extends ChangeNotifier {
     }
   }
 
+  /// Devuelve un mensaje de error, o null si salió bien. La respuesta del servidor
+  /// es la misma exista o no la cuenta, así que aquí tampoco se distingue.
+  Future<String?> solicitarRecuperacion(String email) async {
+    if (!_correoValido(email)) return 'Escribe un correo válido.';
+    try {
+      await _repo.solicitarRecuperacion(email.trim());
+      return null;
+    } on ErrorApi catch (e) {
+      return e.mensaje;
+    }
+  }
+
+  Future<String?> restablecerContrasena(String token, String nueva) async {
+    if (token.trim().isEmpty) return 'Pega el código que recibiste.';
+    try {
+      await _repo.restablecerContrasena(token.trim(), nueva);
+      return null;
+    } on ErrorApi catch (e) {
+      return e.mensaje;
+    }
+  }
+
   Future<void> cerrarSesion() async {
     await _repo.cerrarSesion();
     _estado = EstadoSesion.sinSesion;

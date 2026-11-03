@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../estado/sesion_controlador.dart';
 import '../nucleo/tema.dart';
+import 'pantalla_recuperacion.dart';
 
 class PantallaLogin extends StatefulWidget {
   const PantallaLogin({super.key});
@@ -51,7 +52,7 @@ class _PantallaLoginState extends State<PantallaLogin> {
                   Icon(Icons.savings_outlined,
                       size: 56, color: tema.colorScheme.primary),
                   const SizedBox(height: 12),
-                  Text('App Financiera',
+                  Text('HelpFinance',
                       textAlign: TextAlign.center,
                       style: tema.textTheme.headlineMedium
                           ?.copyWith(fontWeight: FontWeight.w700)),
@@ -110,6 +111,15 @@ class _PantallaLoginState extends State<PantallaLogin> {
                         : Text(_registro ? 'Crear cuenta' : 'Entrar'),
                   ),
                   const SizedBox(height: 8),
+                  if (!_registro)
+                    TextButton(
+                      onPressed: sesion.ocupado
+                          ? null
+                          : () => Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => PantallaRecuperacion(
+                                  emailInicial: _email.text))),
+                      child: const Text('¿Olvidaste tu contraseña?'),
+                    ),
                   TextButton(
                     onPressed: sesion.ocupado
                         ? null

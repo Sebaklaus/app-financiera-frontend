@@ -8,6 +8,8 @@ abstract class RepositorioAuth {
   Future<void> iniciarSesion(String email, String contrasena);
   Future<void> registrar(String email, String contrasena);
   Future<void> cerrarSesion();
+  Future<void> solicitarRecuperacion(String email);
+  Future<void> restablecerContrasena(String token, String contrasenaNueva);
 }
 
 class RepositorioAuthApi implements RepositorioAuth {
@@ -53,5 +55,19 @@ class RepositorioAuthApi implements RepositorioAuth {
       }
     }
     await _api.limpiarSesion();
+  }
+
+  @override
+  Future<void> solicitarRecuperacion(String email) async {
+    await _api.post('/recuperacion/solicitar',
+        cuerpo: {'email': email}, auth: false);
+  }
+
+  @override
+  Future<void> restablecerContrasena(
+      String token, String contrasenaNueva) async {
+    await _api.post('/recuperacion/restablecer',
+        cuerpo: {'token': token, 'contrasena_nueva': contrasenaNueva},
+        auth: false);
   }
 }

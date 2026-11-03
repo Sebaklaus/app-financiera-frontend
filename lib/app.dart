@@ -35,7 +35,7 @@ class AppFinanciera extends StatelessWidget {
         ChangeNotifierProvider<SesionControlador>.value(value: sesion),
       ],
       child: MaterialApp(
-        title: 'App Financiera',
+        title: 'HelpFinance',
         debugShowCheckedModeBanner: false,
         theme: construirTema(Brightness.light),
         darkTheme: construirTema(Brightness.dark),
